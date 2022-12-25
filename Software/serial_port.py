@@ -24,7 +24,7 @@ class SerialPort:
         elif platform == 'linux' or platform == 'linux2':
             self.ports_list = [str(port).split(' ')[0] for port in ports.comports()]
         
-        return ports_list
+        return self.ports_list
         
     def port_isOpen(self):
         return self.ser.is_open
