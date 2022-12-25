@@ -68,8 +68,8 @@ class DataViewer(QMainWindow):
         
     def generalPartition(self):
         self.leftmenu = QFrame(self.centralWidget)
-        self.leftmenu.setMaximumSize(QSize(250, 16777215))
-        self.leftmenu.setMinimumSize(QSize(250, 16777215))
+        self.leftmenu.setMaximumSize(QSize(270, 16777215))
+        self.leftmenu.setMinimumSize(QSize(270, 16777215))
         self.leftmenu.setFrameShape(QFrame.StyledPanel)
         self.leftmenu.setFrameShadow(QFrame.Raised)
         self.vleftlayout = QVBoxLayout(self.leftmenu)
@@ -337,7 +337,7 @@ class DataViewer(QMainWindow):
             self.datedata.setText(QDateTime.currentDateTime().toString("HH:mm:ss"))
             
             self.timedata.setText(QDateTime.currentDateTime().toString("yyyy/MM/dd"))
-            self.temp_average.setText(str(round(self.mean_value(self.temp_data), 4)))
+            self.temp_average.setText(str(round(self.mean_value(self.temp_data), 3)))
             self.hum_average.setText(str(round(self.mean_value(self.hum_data), 4)))
             self.monoxyde_average.setText(str(round(self.mean_value(self.Co_data), 4)))
             
