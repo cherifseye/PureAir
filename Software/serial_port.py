@@ -14,14 +14,15 @@ class SerialPort:
         self.ser= ser
         
     def get_portlist(self):
+        self.ports_list = []
         if platform == 'darwin':
-            ports_list = [str(port).split(' ')[0] for port in ports.comports() if "usb" in str(port)]
+            self.ports_list = [str(port).split(' ')[0] for port in ports.comports() if "usb" in str(port)]
             
         elif platform == 'win32':
-            pass
+            self.ports_list = [str(port).split(' ')[0] for port in ports.comports()]
         
         elif platform == 'linux' or platform == 'linux2':
-            pass
+            self.ports_list = [str(port).split(' ')[0] for port in ports.comports()]
         
         return ports_list
         
