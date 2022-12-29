@@ -3,6 +3,9 @@
 
 block_cipher = None
 
+added_files = [
+    ("images", "images")
+]
 
 a = Analysis(
     ['UI.py'],
@@ -45,7 +48,7 @@ exe = EXE(
 )
 app = BUNDLE(
     exe,
-    name='UI.app',
+    name='Pure Air Viewer.app',
     icon='/Users/castekcu/Downloads/temps.png',
     bundle_identifier=None,
 )

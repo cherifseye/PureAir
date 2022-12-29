@@ -1,8 +1,9 @@
 import serial
 from time import sleep
-from PySide2.QtWidgets import (QMainWindow, QWidget, QApplication, QHBoxLayout,
+from PySide2.QtWidgets import (QMainWindow, QWidget, QApplication, QHBoxLayout, QMenu, QAction, QMenuBar,
                             QComboBox, QVBoxLayout, QFrame, QLabel, QPushButton)
 from PySide2.QtCore import QSize, Qt, QThread, Signal, QDateTime
+from PySide2.QtGui import QIcon
 import sys
 import serial
 from serial_port import SerialPort
@@ -43,6 +44,7 @@ class DataViewer(QMainWindow):
         super().__init__()
         self.initUI()
         self.cwidget()
+        self.create_menu()
         self.generalPartition()
         self.setleftmenuFrame()
         self.setrightmenu()
@@ -65,6 +67,44 @@ class DataViewer(QMainWindow):
         self.centralWidget = QWidget(self)
         self.setCentralWidget(self.centralWidget)
         self.generalLayout = QHBoxLayout(self.centralWidget)
+        
+    def create_menu(self):
+        menu_Bar = QMenuBar(self)
+        self.setMenuBar(menu_Bar)
+        
+        file_Menu = QMenu('&File', self)
+        save_data = QAction(QIcon("images/file-manager.png"), "Data Acquisition", self)
+        screenshot = QAction(QIcon("images/screen.png"), "Screenshots", self)
+        file_Menu.addAction(save_data)
+        file_Menu.addAction(screenshot)
+        
+        exit_menu = QMenu('&Exit', self)
+        exit_action = QAction("Exit", self)
+        exit_action.triggered.connect(self.close)
+        exit_menu.addAction(exit_action)
+        
+        tools_Menu = QMenu('&Tools', self)
+        refresh_action = QAction(QIcon('images/refresh.png'), "&Refresh Port", self)
+        refresh_action.triggered.connect(self.refresh_port)
+        refresh_action.setShortcut("Ctrl+R")
+        tools_Menu.addAction(refresh_action)
+        preference_submenu = QMenu("&Preferences")
+        tools_Menu.addMenu(preference_submenu)
+        
+        clear_graph_action = QAction(QIcon("images/graph-clear.png"), "&Clear Graph", self)
+        tools_Menu.addAction(clear_graph_action)
+        
+        menu_Bar.addMenu(file_Menu)
+        menu_Bar.addMenu(tools_Menu)
+        menu_Bar.addMenu(exit_menu)
+        
+        menu_Bar.setNativeMenuBar(False)
+        
+        
+    
+    def refresh_port(self):
+        self.list_port.clear()
+        self.list_port.addItems(self.display_list_port())
         
     def generalPartition(self):
         self.leftmenu = QFrame(self.centralWidget)
@@ -321,6 +361,7 @@ class DataViewer(QMainWindow):
         self.thread = Arduino()
         self.thread.data_received.connect(self.signal_Accepted)
         self.thread.start()
+        
         
     def signal_Accepted(self):
         
