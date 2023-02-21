@@ -1,18 +1,21 @@
 import serial
 from time import sleep
-from PySide2.QtWidgets import (QMainWindow, QWidget, QApplication, QHBoxLayout, QMenu, QAction, QMenuBar,
-                            QComboBox, QVBoxLayout, QFrame, QLabel, QPushButton)
-from PySide2.QtCore import QSize, Qt, QThread, Signal, QDateTime
-from PySide2.QtGui import QIcon
+from PyQt5.QtWidgets import (QMainWindow, QWidget, QApplication, QHBoxLayout, QMenu, QAction, QMenuBar,
+                            QComboBox, QVBoxLayout, QFrame, QLabel, QPushButton, QFileDialog)
+from PyQt5.QtCore import QSize, Qt, QThread, pyqtSignal, QDateTime
+from PyQt5.QtGui import QIcon
 import sys
 import serial
 from serial_port import SerialPort
 import pyqtgraph as pg
 from statistics import mean
+import pandas as pd
+import os
+import csv
 
 
 class Arduino(QThread):
-    data_received = Signal(list)
+    data_received = pyqtSignal(list)
     
     def __init__(self):
         super().__init__()
@@ -74,7 +77,9 @@ class DataViewer(QMainWindow):
         
         file_Menu = QMenu('&File', self)
         save_data = QAction(QIcon("images/file-manager.png"), "Data Acquisition", self)
+        save_data.triggered.connect(self.save_data)
         screenshot = QAction(QIcon("images/screen.png"), "Screenshots", self)
+        screenshot.triggered.connect(self.screenshoot_)
         file_Menu.addAction(save_data)
         file_Menu.addAction(screenshot)
         
@@ -93,6 +98,7 @@ class DataViewer(QMainWindow):
         
         clear_graph_action = QAction(QIcon("images/graph-clear.png"), "&Clear Graph", self)
         tools_Menu.addAction(clear_graph_action)
+        clear_graph_action.triggered.connect(self.clear_graph)
         
         menu_Bar.addMenu(file_Menu)
         menu_Bar.addMenu(tools_Menu)
@@ -100,11 +106,35 @@ class DataViewer(QMainWindow):
         
         menu_Bar.setNativeMenuBar(False)
         
-        
     
     def refresh_port(self):
         self.list_port.clear()
         self.list_port.addItems(self.display_list_port())
+        
+    def screenshoot_(self):
+        screen = QApplication.primaryScreen()
+        pixmap_ = screen.grabWindow(0)
+        img, _ = QFileDialog.getSaveFileName(self,"PureAir",
+                                            filter="PNG(*.png);; JPEG(*.jpg)")
+        if img[-3:] == "png":
+            pixmap_.save(img, "png")
+        elif img[-3:] == "jpg":
+            pixmap_.save(img, "jpg")
+    
+    
+    
+    def save_data(self):
+        options = QFileDialog.Options()
+        filename, _ = QFileDialog.getSaveFileName(self, "Save CSV File", "", "CSV Files (*.csv)", options=options)
+
+        if filename:
+            # Write to the CSV file
+            with open(filename, mode='w', newline='') as csv_file:
+                writer = csv.writer(csv_file)
+                writer.writerow(['Time', 'Temperature', 'Humidity', 'CO'])
+                for i in range(len(self.temp_data)):
+                    writer.writerow([self.timelist[i], self.temp_data[i], self.hum_data[i], self.Co_data[i]])
+        
         
     def generalPartition(self):
         self.leftmenu = QFrame(self.centralWidget)
@@ -166,6 +196,7 @@ class DataViewer(QMainWindow):
         self.hportlayout.addWidget(self.list_port)
         
         self.open_port_button = QPushButton(self.portframe)
+        self.open_port_button.setShortcut('Ctrl+O+P')
         self.open_port_button.setText("Open Port")
         self.open_port_button.setMinimumHeight(30)
         self.open_port_button.clicked.connect(self.open_port_clicked)
@@ -185,6 +216,7 @@ class DataViewer(QMainWindow):
         
         self.close_port_button = QPushButton(self.portframe)
         self.close_port_button.setText("Close Port")
+        self.close_port_button.setShortcut('Ctrl+C+P')
         self.close_port_button.setMinimumHeight(30)
         self.close_port_button.clicked.connect(self.close_port_clicked)
         self.close_port_button.setStyleSheet(
@@ -391,6 +423,9 @@ class DataViewer(QMainWindow):
 
         except: 
             self.thread.exiting = True
+            
+    def clear_graph(self):
+        self.graph.clear()
         
 
         
