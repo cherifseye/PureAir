@@ -13,6 +13,13 @@ import pandas as pd
 import os
 import csv
 
+def ressource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except: 
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 class Arduino(QThread):
     data_received = pyqtSignal(list)
@@ -73,12 +80,19 @@ class DataViewer(QMainWindow):
         
     def create_menu(self):
         menu_Bar = QMenuBar(self)
+        menu_Bar.setStyleSheet(
+            "background-color: white;"
+            "border-radius: 10px;"
+        )
         self.setMenuBar(menu_Bar)
         
         file_Menu = QMenu('&File', self)
-        save_data = QAction(QIcon("images/file-manager.png"), "Data Acquisition", self)
+        file_Menu.setStyleSheet(
+            "color: white;"
+        )
+        save_data = QAction(QIcon(ressource_path("images/file-manager.png")), "Data Acquisition", self)
         save_data.triggered.connect(self.save_data)
-        screenshot = QAction(QIcon("images/screen.png"), "Screenshots", self)
+        screenshot = QAction(QIcon(ressource_path("images/screen.png")), "Screenshots", self)
         screenshot.triggered.connect(self.screenshoot_)
         file_Menu.addAction(save_data)
         file_Menu.addAction(screenshot)
@@ -89,14 +103,17 @@ class DataViewer(QMainWindow):
         exit_menu.addAction(exit_action)
         
         tools_Menu = QMenu('&Tools', self)
-        refresh_action = QAction(QIcon('images/refresh.png'), "&Refresh Port", self)
+        tools_Menu.setStyleSheet(
+            'color: white;'
+        )
+        refresh_action = QAction(QIcon(ressource_path('images/refresh.png')), "&Refresh Port", self)
         refresh_action.triggered.connect(self.refresh_port)
         refresh_action.setShortcut("Ctrl+R")
         tools_Menu.addAction(refresh_action)
         preference_submenu = QMenu("&Preferences")
         tools_Menu.addMenu(preference_submenu)
         
-        clear_graph_action = QAction(QIcon("images/graph-clear.png"), "&Clear Graph", self)
+        clear_graph_action = QAction(QIcon(ressource_path("images/graph-clear.png")), "&Clear Graph", self)
         tools_Menu.addAction(clear_graph_action)
         clear_graph_action.triggered.connect(self.clear_graph)
         
@@ -282,18 +299,22 @@ class DataViewer(QMainWindow):
         self.variablesframelayout = QVBoxLayout(self.variablesframe)
         
         dateLbel = QLabel(self.variablesframe)
+        dateLbel.setStyleSheet('color: white')
         dateLbel.setText("Hour")
         dateLbel.setAlignment(Qt.AlignLeft)
         
         temperatureLbel = QLabel(self.variablesframe)
+        temperatureLbel.setStyleSheet('color: white')
         temperatureLbel.setText("Temperature")
         temperatureLbel.setAlignment(Qt.AlignLeft)
         
         humiditylabel = QLabel(self.variablesframe)
+        humiditylabel.setStyleSheet('color: white')
         humiditylabel.setText("Humidity")
         humiditylabel.setAlignment(Qt.AlignLeft)
         
         monoxydelabel = QLabel(self.variablesframe)
+        monoxydelabel.setStyleSheet('color: white')
         monoxydelabel.setText("smoke")
         monoxydelabel.setAlignment(Qt.AlignLeft)
         
@@ -313,17 +334,21 @@ class DataViewer(QMainWindow):
         date = QDateTime.currentDateTime()
         self.datedata = QLabel(self.data1frame)
         self.datedata.setText(date.toString("HH:mm:ss"))
+        self.datedata.setStyleSheet('color: white')
         self.datedata.setAlignment(Qt.AlignRight)
         
         self.tempdata = QLabel(self.data1frame)
+        self.tempdata.setStyleSheet('color: white')
         self.tempdata.setText('0')
         self.tempdata.setAlignment(Qt.AlignRight)
         
         self.humiditydata = QLabel(self.data1frame)
+        self.humiditydata.setStyleSheet('color: white')
         self.humiditydata.setText('0')
         self.humiditydata.setAlignment(Qt.AlignRight)
         
         self.monoxydedata = QLabel(self.data1frame)
+        self.monoxydedata.setStyleSheet('color: white')
         self.monoxydedata.setText('0')
         self.monoxydedata.setAlignment(Qt.AlignRight)
         
@@ -339,19 +364,23 @@ class DataViewer(QMainWindow):
         self.v2framelayout = QVBoxLayout(self.variable2frame)
         
         time2 = QLabel(self.variable2frame)
-        time2.setText("Date")
+        time2.setStyleSheet('color: white')
+        time2.setText("Time")
         time2.setAlignment(Qt.AlignLeft)
         
         temperature = QLabel(self.variable2frame)
+        temperature.setStyleSheet('color: white')
         temperature.setAlignment(Qt.AlignLeft)
         temperature.setText("Temperature")
         
         humidity = QLabel(self.variable2frame)
+        humidity.setStyleSheet('color: white')
         humidity.setText("Humidity")
         humidity.setAlignment(Qt.AlignLeft)
         
         CO_val = QLabel(self.variable2frame)
         CO_val.setAlignment(Qt.AlignLeft)
+        CO_val.setStyleSheet('color: white')
         CO_val.setText("CO")
         
         self.v2framelayout.addWidget(time2)
@@ -365,18 +394,22 @@ class DataViewer(QMainWindow):
         self.h_averagelayout.addWidget(self.data2frame)
         
         self.timedata = QLabel(self.data2frame)
+        self.timedata.setStyleSheet('color: white')
         self.timedata.setText("0s")
         self.timedata.setAlignment(Qt.AlignRight)
         
         self.temp_average = QLabel(self.data2frame)
+        self.temp_average.setStyleSheet('color: white')
         self.temp_average.setAlignment(Qt.AlignRight)
         self.temp_average.setText("0C")
         
         self.hum_average = QLabel(self.data2frame)
+        self.hum_average.setStyleSheet('color: white')
         self.hum_average.setText("0%")
         self.hum_average.setAlignment(Qt.AlignRight)
         
         self.monoxyde_average = QLabel(self.data2frame)
+        self.monoxyde_average.setStyleSheet('color: white')
         self.monoxyde_average.setText("0%")
         self.monoxyde_average.setAlignment(Qt.AlignRight)
         
