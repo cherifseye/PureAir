@@ -82,6 +82,7 @@ class DataViewer(QMainWindow):
         menu_Bar = QMenuBar(self)
         menu_Bar.setStyleSheet(
             "background-color: white;"
+            "color: black;"
             "border-radius: 10px;"
         )
         self.setMenuBar(menu_Bar)
